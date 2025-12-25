@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:14
+    container_name: pyu-postgres
+    environment:
+      POSTGRES_HOST: database
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: opennms
+      POSTGRES_PASSWORD: opennms
+      POSTGRES_DB: opennms
+    volumes:
+      - pyu-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U opennms"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - pyu-main
+
+  horizon:
+    image: opennms/horizon:32.0.8
+    container_name: pyu-horizon
+    environment:
+      POSTGRES_HOST: database
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: opennms
+      POSTGRES_PASSWORD: opennms
+    volumes:
+      - pyu-horizon-data:/opennms-data
+    command: ["-s"]
+    ports:
+      - "8980:8980"
+      - "8101:8101"
+    depends_on:
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-I", "http://localhost:8980/opennms/login.jsp"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - pyu-main
+
+  activemq:
+    image: apache/activemq-classic:5.18.3
+    container_name: pyu-activemq
+    environment:
+      ACTIVEMQ_BROKER_NAME: pyu-broker
+      ACTIVEMQ_ADMIN_LOGIN: admin
+      ACTIVEMQ_ADMIN_PASSWORD: admin
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+    networks:
+      - pyu-main
+
+volumes:
+  pyu-postgres-data:
+  pyu-horizon-data:
+
+networks:
+  pyu-main:
+    driver: bridge

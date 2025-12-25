@@ -1,0 +1,33 @@
+services:
+  pyu-router:
+    image: networkboot/dhcpd
+    container_name: pyu-main-router
+    hostname: pyu-router-01
+    networks:
+      - pyu-main-campus
+    command: eth0
+
+  pyu-web:
+    image: nginx:alpine
+    container_name: pyu-main-web
+    hostname: pyu-web-server
+    networks:
+      - pyu-main-campus
+    volumes:
+      - ./web-content:/usr/share/nginx/html:ro
+
+  pyu-dns:
+    image: strm/dnsmasq
+    container_name: pyu-main-dns
+    hostname: pyu-dns-server
+    networks:
+      - pyu-main-campus
+    cap_add:
+      - NET_ADMIN
+
+networks:
+  pyu-main-campus:
+    external: true
+
+#Jose Vasconcelos - Dec 2025
+#acme5bataj10@outlook.com

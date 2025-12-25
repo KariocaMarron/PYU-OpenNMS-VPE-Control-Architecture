@@ -1,0 +1,36 @@
+# =========================
+# Docker / Containers
+# =========================
+*.log
+*.pid
+*.tmp
+
+# Docker volumes and runtime data
+data/
+volumes/
+postgres/
+opennms/data/
+opennms/logs/
+
+# Docker Compose overrides
+docker-compose.override.yml
+
+# =========================
+# Secrets and credentials
+# =========================
+*.env
+.env
+secrets/
+*.key
+*.pem
+
+# =========================
+# OS / Editor noise
+# =========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+#Jose Vasconcelos - Dec 2025
+#acme5bataj10@outlook.com
