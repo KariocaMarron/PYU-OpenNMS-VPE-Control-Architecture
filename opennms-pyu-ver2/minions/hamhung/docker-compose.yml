@@ -1,0 +1,33 @@
+services:
+  minion:
+    image: opennms/minion:33.0.2
+    container_name: hamhung-minion
+    hostname: hamhung-minion
+    environment:
+      MINION_ID: hamhung-minion-01
+      MINION_LOCATION: Hamhung
+      OPENNMS_HTTP_URL: http://pyu-horizon:8980/opennms
+      OPENNMS_HTTP_USER: admin
+      OPENNMS_HTTP_PASS: admin
+      OPENNMS_BROKER_URL: tcp://pyu-activemq:61616
+    command: ["-c"]
+    entrypoint: ["/opt/minion-startup.sh"]
+    volumes:
+      - minion-data:/opt/minion-data
+      - ./minion-startup.sh:/opt/minion-startup.sh:ro
+      - ./opennms.properties.d:/opt/minion/etc/opennms.properties.d:ro
+    ports:
+      - "8201:8201/tcp"
+    networks:
+      - kafka_pyu-main
+
+volumes:
+  minion-data:
+
+networks:
+  kafka_pyu-main:
+    external: true
+
+#Jose Vasconcelos - Dec 2025
+#GitHub - KariocaMarron
+#acme5bataj10@outlook.com

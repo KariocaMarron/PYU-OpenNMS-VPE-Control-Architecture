@@ -1,54 +1,50 @@
 services:
-  hamhung-minion:
+  minion:
     image: opennms/minion:33.0.2
     container_name: hamhung-minion
-    hostname: hamhung-minion-01
+    hostname: hamhung-minion
     environment:
       MINION_ID: hamhung-minion-01
       MINION_LOCATION: Hamhung
-      OPENNMS_BROKER_URL: tcp://pyu-activemq:61616
       OPENNMS_HTTP_URL: http://pyu-horizon:8980/opennms
       OPENNMS_HTTP_USER: admin
       OPENNMS_HTTP_PASS: admin
-      OPENNMS_BROKER_USER: admin
-      OPENNMS_BROKER_PASS: admin
+      OPENNMS_IPC_STRATEGY: kafka
+      OPENNMS_KAFKA_BOOTSTRAP_SERVERS: pyu-kafka:9092
     command: ["-c"]
+    entrypoint: ["/opt/minion-startup.sh"]
     volumes:
       - hamhung-minion-data:/opt/minion-data
+      - ./hamhung-custom.properties:/opt/minion/etc/custom.properties:ro
+      - ./minion-startup.sh:/opt/minion-startup.sh:ro
+    ports:
+      - "8201:8201/tcp"
+      - "1162:1162/udp"
+      - "1514:1514/udp"
     networks:
       - hamhung-campus
       - horizon_pyu-main
-    depends_on:
-      - hamhung-router
 
-  hamhung-router:
-    image: networkboot/dhcpd
+  router:
+    image: alpine:latest
     container_name: hamhung-router
-    hostname: hamhung-rtr-01
+    command: sleep infinity
     networks:
-      hamhung-campus:
-        ipv4_address: 192.168.20.1
-    command: eth0
+      - hamhung-campus
 
-  hamhung-web:
+  web:
     image: nginx:alpine
     container_name: hamhung-web
-    hostname: hamhung-web-server
-    networks:
-      hamhung-campus:
-        ipv4_address: 192.168.20.10
     volumes:
       - ./hamhung-web-content:/usr/share/nginx/html:ro
+    networks:
+      - hamhung-campus
 
-  hamhung-dns:
+  dns:
     image: strm/dnsmasq
     container_name: hamhung-dns
-    hostname: hamhung-dns-server
     networks:
-      hamhung-campus:
-        ipv4_address: 192.168.20.53
-    cap_add:
-      - NET_ADMIN
+      - hamhung-campus
 
 volumes:
   hamhung-minion-data:
@@ -56,10 +52,6 @@ volumes:
 networks:
   hamhung-campus:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.20.0/24
-          gateway: 192.168.20.254
   horizon_pyu-main:
     external: true
 

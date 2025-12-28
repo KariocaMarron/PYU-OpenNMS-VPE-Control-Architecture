@@ -9,14 +9,27 @@ services:
       POSTGRES_PASSWORD: opennms
       POSTGRES_DB: opennms
     volumes:
-      - pyu-postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U opennms"]
       interval: 10s
       timeout: 3s
       retries: 3
     networks:
-      - pyu-main
+      - kafka_pyu-main
+
+
+  activemq:
+    image: apache/activemq-classic:5.18.3
+    container_name: pyu-activemq
+    environment:
+      ACTIVEMQ_ADMIN_LOGIN: admin
+      ACTIVEMQ_ADMIN_PASSWORD: admin
+    ports:
+      - "61616:61616/tcp"
+      - "8161:8161/tcp"
+    networks:
+      - kafka_pyu-main
 
   horizon:
     image: opennms/horizon:33.0.2
@@ -27,7 +40,7 @@ services:
       POSTGRES_USER: opennms
       POSTGRES_PASSWORD: opennms
     volumes:
-      - pyu-horizon-data:/opennms-data
+      - horizon-data:/opennms-data
       - ./overlay:/opt/opennms-overlay
     command: ["-s"]
     ports:
@@ -42,18 +55,18 @@ services:
       timeout: 5s
       retries: 3
     networks:
-      - pyu-main
-      - pyu-main-campus
+      - kafka_pyu-main
 
 volumes:
-  pyu-postgres-data:
-  pyu-horizon-data:
+  postgres-data:
+  horizon-data:
 
 networks:
-  pyu-main:
-    driver: bridge
-  pyu-main-campus:
+  kafka_pyu-main:
     external: true
 
 #Jose Vasconcelos - Dec 2025
+
+#Jose Vasconcelos - Dec 2025
+#GitHub - KariocaMarron
 #acme5bataj10@outlook.com

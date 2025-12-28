@@ -1,0 +1,20 @@
+services:
+  activemq:
+    image: apache/activemq-classic:latest
+    container_name: pyu-activemq
+    hostname: pyu-activemq
+    networks:
+      - pyu-main-campus
+    ports:
+      - "61616:61616"   # OpenWire (Minion broker-url)
+      - "8161:8161"     # Web console (optional)
+    healthcheck:
+      test: ["CMD", "sh", "-lc", "echo > /dev/tcp/localhost/61616"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+networks:
+  pyu-main-campus:
+    external: true
+    name: pyu-main-campus
