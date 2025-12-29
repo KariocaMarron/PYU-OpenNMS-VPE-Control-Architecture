@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model-import xmlns="http://xmlns.opennms.org/xsd/config/model-import"
+              date-stamp="2025-12-29T01:00:00.000Z"
+              foreign-source="pyu-services">
+    
+    <!-- LDAP Authentication Server -->
+    <node foreign-id="pyu-ldap" node-label="Pyongyang LDAP Server">
+        <interface ip-addr="pyu-ldap" status="1" snmp-primary="N">
+            <monitored-service service-name="ICMP"/>
+            <monitored-service service-name="LDAP"/>
+        </interface>
+        
+        <category name="Production"/>
+        <category name="Authentication"/>
+        <category name="Pyongyang"/>
+    </node>
+    
+</model-import>

@@ -1,0 +1,53 @@
+services:
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: pyu-ldap
+    hostname: pyu-ldap
+    environment:
+      LDAP_ORGANISATION: "Pyongyang University"
+      LDAP_DOMAIN: "pyu.edu.kp"
+      LDAP_ADMIN_PASSWORD: "admin"
+      LDAP_CONFIG_PASSWORD: "config"
+      LDAP_RFC2307BIS_SCHEMA: "true"
+      LDAP_REMOVE_CONFIG_AFTER_SETUP: "true"
+      LDAP_TLS_VERIFY_CLIENT: "never"
+    volumes:
+      - ldap-data:/var/lib/ldap
+      - ldap-config:/etc/ldap/slapd.d
+    ports:
+      - "389:389"
+      - "636:636"
+    networks:
+      - kafka_pyu-main
+    restart: unless-stopped
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: pyu-ldap-admin
+    hostname: pyu-ldap-admin
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: "pyu-ldap"
+      PHPLDAPADMIN_HTTPS: "false"
+    ports:
+      - "8082:80"
+    depends_on:
+      - openldap
+    networks:
+      - kafka_pyu-main
+    restart: unless-stopped
+
+volumes:
+  ldap-data:
+  ldap-config:
+
+networks:
+  kafka_pyu-main:
+    external: true
+
+#Jose Vasconcelos - Dec 2025
+#GitHub - KariocaMarron
+#acme5bataj10@outlook.com
+
+#Jose Vasconcelos - Dec 2025
+#GitHub - KariocaMarron
+#acme5bataj10@outlook.com

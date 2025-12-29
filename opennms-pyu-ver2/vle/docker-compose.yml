@@ -1,0 +1,20 @@
+services:
+  vle:
+    image: nginx:alpine
+    container_name: pyu-vle
+    hostname: pyu-vle
+    volumes:
+      - ./vle-content:/usr/share/nginx/html:ro
+    ports:
+      - "8081:80/tcp"
+    restart: unless-stopped
+    networks:
+      - kafka_pyu-main
+
+networks:
+  kafka_pyu-main:
+    external: true
+
+#Jose Vasconcelos - Dec 2025
+#GitHub - KariocaMarron
+#acme5bataj10@outlook.com

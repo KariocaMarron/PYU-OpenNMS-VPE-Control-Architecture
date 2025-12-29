@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model-import xmlns="http://xmlns.opennms.org/xsd/config/model-import"
+              date-stamp="2025-12-29T00:00:00.000Z"
+              foreign-source="pyu-services">
+    
+    <!-- VLE Server -->
+    <node foreign-id="pyu-vle" node-label="Pyongyang VLE Server">
+        <interface ip-addr="pyu-vle" status="1" snmp-primary="N">
+            <monitored-service service-name="ICMP"/>
+            <monitored-service service-name="HTTP"/>
+        </interface>
+        
+        <category name="Production"/>
+        <category name="VLE"/>
+        <category name="Pyongyang"/>
+    </node>
+    
+</model-import>

@@ -1,36 +1,27 @@
-# =========================
-# Docker / Containers
-# =========================
-*.log
-*.pid
+# Backup files
+*.bak
+*.bak.*
+*_BROKEN.yml
+*_VER*.yml
+
+# Audit files
+audit_*/
+audit_*.tar.gz
+
+# Temporary files
 *.tmp
+*.swp
+*~
 
-# Docker volumes and runtime data
-data/
-volumes/
-postgres/
-opennms/data/
-opennms/logs/
+# Docker volumes
+*-data/
 
-# Docker Compose overrides
-docker-compose.override.yml
+# PDFs (generated from markdown)
+*.pdf
 
-# =========================
-# Secrets and credentials
-# =========================
-*.env
-.env
-secrets/
-*.key
-*.pem
+# Log files
+*.log
 
-# =========================
-# OS / Editor noise
-# =========================
+# OS files
 .DS_Store
 Thumbs.db
-.vscode/
-.idea/
-
-#Jose Vasconcelos - Dec 2025
-#acme5bataj10@outlook.com

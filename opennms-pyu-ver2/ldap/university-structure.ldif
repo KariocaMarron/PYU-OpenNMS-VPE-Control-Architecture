@@ -1,0 +1,68 @@
+rm university-structure.ldif
+nano university-structure.ldif
+```
+
+Then paste this content (copy exactly as shown):
+```
+# Organizational Units
+dn: ou=people,dc=pyu,dc=edu,dc=kp
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=pyu,dc=edu,dc=kp
+objectClass: organizationalUnit
+ou: groups
+
+# Sample Users
+dn: uid=jvasconcelos,ou=people,dc=pyu,dc=edu,dc=kp
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: jvasconcelos
+sn: Vasconcelos
+givenName: Jose
+cn: Jose Vasconcelos
+displayName: Jose Vasconcelos
+uidNumber: 10001
+gidNumber: 5000
+userPassword: student123
+gecos: Jose Vasconcelos
+loginShell: /bin/bash
+homeDirectory: /home/jvasconcelos
+mail: jvasconcelos@pyu.edu.kp
+
+dn: uid=student01,ou=people,dc=pyu,dc=edu,dc=kp
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: student01
+sn: Kim
+givenName: Min-Ho
+cn: Kim Min-Ho
+displayName: Kim Min-Ho
+uidNumber: 10002
+gidNumber: 5000
+userPassword: student123
+gecos: Kim Min-Ho
+loginShell: /bin/bash
+homeDirectory: /home/student01
+mail: student01@pyu.edu.kp
+
+# Groups
+dn: cn=students,ou=groups,dc=pyu,dc=edu,dc=kp
+objectClass: posixGroup
+cn: students
+gidNumber: 5000
+memberUid: jvasconcelos
+memberUid: student01
+
+dn: cn=faculty,ou=groups,dc=pyu,dc=edu,dc=kp
+objectClass: posixGroup
+cn: faculty
+gidNumber: 5001
+
+
+
+# Jose Vasconcelos - Dec 2025
+# GitHub - KariocaMarron
+# acme5bataj10@outlook.com
