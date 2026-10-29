@@ -6,7 +6,7 @@ services:
       POSTGRES_HOST: database
       POSTGRES_PORT: 5432
       POSTGRES_USER: opennms
-      POSTGRES_PASSWORD: opennms
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: opennms
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -24,7 +24,7 @@ services:
     container_name: pyu-activemq
     environment:
       ACTIVEMQ_ADMIN_LOGIN: admin
-      ACTIVEMQ_ADMIN_PASSWORD: admin
+      ACTIVEMQ_ADMIN_PASSWORD: ${ACTIVEMQ_ADMIN_PASSWORD}
     ports:
       - "61616:61616/tcp"
       - "8161:8161/tcp"
@@ -38,7 +38,7 @@ services:
       POSTGRES_HOST: database
       POSTGRES_PORT: 5432
       POSTGRES_USER: opennms
-      POSTGRES_PASSWORD: opennms
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - horizon-data:/opennms-data
       - ./overlay:/opt/opennms-overlay

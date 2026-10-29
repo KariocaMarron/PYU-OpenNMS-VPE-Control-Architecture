@@ -101,7 +101,7 @@ org.opennms.netmgt.daemon.ConditionalActiveMQContext
 environment:
   OPENNMS_ACTIVEMQ_BROKER_URL: failover:tcp://pyu-activemq:61616
   OPENNMS_ACTIVEMQ_BROKER_USERNAME: admin
-  OPENNMS_ACTIVEMQ_BROKER_PASSWORD: admin
+  OPENNMS_ACTIVEMQ_BROKER_PASSWORD: ${ACTIVEMQ_BROKER_PASSWORD}
 ```
 
 **Result:** ❌ **FAILED** - Environment variables not recognized by entrypoint script
@@ -119,7 +119,7 @@ overlay/etc/opennms.properties.d/activemq.properties:
 org.opennms.activemq.broker.disable=false
 org.opennms.activemq.broker.url=failover:tcp://pyu-activemq:61616
 org.opennms.activemq.broker.username=admin
-org.opennms.activemq.broker.password=admin
+org.opennms.activemq.broker.password=${ACTIVEMQ_BROKER_PASSWORD}
 ```
 
 **Result:** ❌ **FAILED** - ConditionalActiveMQContext error persisted
@@ -135,7 +135,7 @@ org.opennms.activemq.broker.password=admin
 ```properties
 org.opennms.activemq.broker.disable=true
 org.opennms.activemq.user=admin
-org.opennms.activemq.password=admin
+org.opennms.activemq.password=${ACTIVEMQ_BROKER_PASSWORD}
 org.opennms.jms.timeout=3000
 ```
 

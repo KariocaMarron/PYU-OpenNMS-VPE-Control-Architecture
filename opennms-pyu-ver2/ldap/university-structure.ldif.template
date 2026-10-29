@@ -25,7 +25,7 @@ cn: Jose Vasconcelos
 displayName: Jose Vasconcelos
 uidNumber: 10001
 gidNumber: 5000
-userPassword: student123
+userPassword: ${LDAP_USER_PASSWORD}
 gecos: Jose Vasconcelos
 loginShell: /bin/bash
 homeDirectory: /home/jvasconcelos
@@ -42,7 +42,7 @@ cn: Kim Min-Ho
 displayName: Kim Min-Ho
 uidNumber: 10002
 gidNumber: 5000
-userPassword: student123
+userPassword: ${LDAP_USER_PASSWORD}
 gecos: Kim Min-Ho
 loginShell: /bin/bash
 homeDirectory: /home/student01

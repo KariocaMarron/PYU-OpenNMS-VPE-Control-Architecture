@@ -16,7 +16,7 @@ org.opennms.core.ipc.twin.kafka.bootstrap.servers=pyu-kafka:9092
 # ActiveMQ for Twin RPC (fallback/legacy)
 org.opennms.activemq.broker.url=tcp://pyu-activemq:61616
 org.opennms.activemq.user=admin
-org.opennms.activemq.password=admin
+org.opennms.activemq.password=${ACTIVEMQ_BROKER_PASSWORD}
 
 #Jose Vasconcelos - Dec 2025
 #acme5bataj10@outlook.com

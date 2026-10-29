@@ -110,7 +110,7 @@ curl -I http://localhost:8081
 
 **Login Credentials:**
 - Username: `admin`
-- Password: `Admin123!`
+- Password: set during installation (not stored in this repository)
 
 **First Login:**
 1. You may see Moodle installation wizard (if database was empty)
@@ -287,7 +287,7 @@ Create: `~/opennms-pyu-lab/opennms-pyu-ver2/requisitions/vle-node.xml`
 
 **Import to OpenNMS:**
 1. Access OpenNMS: http://localhost:8980/opennms
-2. Login: admin / admin
+2. Login: admin (password set in .env as OPENNMS_ADMIN_PASSWORD)
 3. Navigate: Configure → Manage Provisioning Requisitions
 4. Import the XML file
 5. Click "Synchronize"

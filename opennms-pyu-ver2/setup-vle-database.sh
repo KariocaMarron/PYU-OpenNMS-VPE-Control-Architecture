@@ -2,6 +2,11 @@
 # VLE Database Setup Script
 # Creates Moodle database and user in existing pyu-postgres container
 
+# Load lab passwords from .env in the repository root
+ENV_FILE="$(dirname "$0")/../.env"
+[ -f "$ENV_FILE" ] || { echo "ERROR: $ENV_FILE not found. Copy .env.example to .env first."; exit 1; }
+set -a; . "$ENV_FILE"; set +a
+
 echo "=========================================="
 echo "VLE Database Setup for Pyongyang University"
 echo "=========================================="
@@ -22,20 +27,14 @@ echo ""
 # Create Moodle database and user
 echo "Creating Moodle database and user..."
 
-docker exec pyu-postgres psql -U opennms -d postgres << 'EOF'
+docker exec -i pyu-postgres psql -U opennms -d postgres -v moodle_pw="$MOODLE_DB_PASSWORD" << 'EOF'
 -- Create Moodle database if it doesn't exist
 SELECT 'CREATE DATABASE moodle'
 WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'moodle')\gexec
 
 -- Create Moodle user if it doesn't exist
-DO
-$$
-BEGIN
-   IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = 'moodle') THEN
-      CREATE USER moodle WITH PASSWORD 'moodle';
-   END IF;
-END
-$$;
+SELECT format('CREATE USER moodle WITH PASSWORD %L', :'moodle_pw')
+WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = 'moodle')\gexec
 
 -- Grant privileges
 GRANT ALL PRIVILEGES ON DATABASE moodle TO moodle;
@@ -50,7 +49,7 @@ if [ $? -eq 0 ]; then
     echo "  Port: 5432"
     echo "  Database: moodle"
     echo "  User: moodle"
-    echo "  Password: moodle"
+    echo "  Password: (set in .env as MOODLE_DB_PASSWORD)"
     echo ""
 else
     echo ""

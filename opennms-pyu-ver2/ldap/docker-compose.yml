@@ -6,8 +6,8 @@ services:
     environment:
       LDAP_ORGANISATION: "Pyongyang University"
       LDAP_DOMAIN: "pyu.edu.kp"
-      LDAP_ADMIN_PASSWORD: "admin"
-      LDAP_CONFIG_PASSWORD: "config"
+      LDAP_ADMIN_PASSWORD: "${LDAP_ADMIN_PASSWORD}"
+      LDAP_CONFIG_PASSWORD: "${LDAP_CONFIG_PASSWORD}"
       LDAP_RFC2307BIS_SCHEMA: "true"
       LDAP_REMOVE_CONFIG_AFTER_SETUP: "true"
       LDAP_TLS_VERIFY_CLIENT: "never"
