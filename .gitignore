@@ -29,5 +29,3 @@ Thumbs.db
 # Local secrets: never commit
 .env
 horizon/overlay/etc/opennms.properties.d/kafka.properties
-opennms-pyu-ver2/horizon/overlay/etc/opennms.properties.d/activemq.properties
-opennms-pyu-ver2/ldap/university-structure.ldif
