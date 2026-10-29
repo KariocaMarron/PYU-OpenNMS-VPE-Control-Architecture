@@ -4,7 +4,7 @@
 
 **Objective:** Deploy OpenNMS Horizon 33.0.2 with distributed Minion architecture using external ActiveMQ broker for RPC/Sink communication.
 
-**Outcome:** Critical bug discovered in OpenNMS Horizon 33.0.2 Docker image preventing external ActiveMQ broker configuration. Successfully pivoted to Apache Kafka messaging system as enterprise-grade alternative.
+**Outcome:** In this lab, OpenNMS Horizon 33.0.2 (Docker image) failed to use an external ActiveMQ broker, and no configuration change resolved it. The messaging layer was switched to Apache Kafka.
 
 ---
 
@@ -20,7 +20,7 @@
 | OpenNMS Horizon | 33.0.2 | Network monitoring core |
 | PostgreSQL | 14 | Database backend |
 | Apache ActiveMQ | 5.18.3 | Message broker (attempted) |
-| Apache Kafka | 7.5.0 | Message broker (final solution) |
+| Apache Kafka (Confluent Platform images) | 7.5.0 | Message broker (final solution in this version) |
 | OpenNMS Minion | 33.0.2 | Remote poller |
 
 ### 2.2 Network Topology
@@ -57,11 +57,11 @@ org.opennms.netmgt.daemon.ConditionalActiveMQContext
 
 **Error Classification:** Spring Framework Bean Initialization Failure
 
-**Severity:** Critical - Prevents OpenNMS from establishing external ActiveMQ connections
+**Impact on the lab:** Prevents OpenNMS from establishing external ActiveMQ connections
 
 ### 3.2 Root Cause Analysis
 
-**Primary Cause:** Bug in OpenNMS Horizon 33.0.2 Docker image where the `ConditionalActiveMQContext` Spring bean fails to initialize when attempting to disable embedded ActiveMQ broker and configure external broker connection.
+**Suspected cause:** A fault in the OpenNMS Horizon 33.0.2 Docker image, where the `ConditionalActiveMQContext` Spring bean fails to initialize when attempting to disable embedded ActiveMQ broker and configure external broker connection.
 
 **Technical Details:**
 - The `ConditionalActiveMQContext` class is designed to conditionally load ActiveMQ configuration based on property settings
@@ -159,7 +159,7 @@ org.opennms.jms.timeout=3000
 
 **Result:** ❌ **FAILED** - ConditionalActiveMQContext error still present
 
-**Conclusion:** Configuration file conflicts not the issue; bug is in the Docker image itself
+**Conclusion:** Configuration file conflicts were ruled out; the fault appears to lie in the Docker image rather than the configuration
 
 ---
 
@@ -238,8 +238,8 @@ docker exec hamhung-minion netstat -an | grep 61616  # Shows connection
 
 ## 5. Final Diagnosis
 
-### 5.1 Confirmed Bug
-**Bug ID:** OpenNMS Horizon 33.0.2 Docker Image - ConditionalActiveMQContext Initialization Failure
+### 5.1 Observed Fault
+**Description:** OpenNMS Horizon 33.0.2 Docker Image - ConditionalActiveMQContext Initialization Failure
 
 **Affected Component:** `org.opennms.netmgt.daemon.ConditionalActiveMQContext`
 
@@ -247,13 +247,13 @@ docker exec hamhung-minion netstat -an | grep 61616  # Shows connection
 
 **Failure Mode:** Spring Framework refuses to load application context due to missing or invalid bean configuration
 
-### 5.2 Why All Attempts Failed
-The bug is **not configuration-related** but rather a **code defect** in the Docker image:
+### 5.2 Why the Attempts Failed (Hypotheses)
+The evidence points away from configuration and towards a defect in the Docker image. This was not confirmed with the OpenNMS project, so the points below are working hypotheses:
 
 1. The `ConditionalActiveMQContext` class has hardcoded assumptions about embedded broker
 2. The entrypoint script doesn't properly handle external broker configuration translation
 3. Spring's fail-fast mechanism prevents startup when it detects incomplete bean wiring
-4. No amount of property configuration can fix the broken Java class
+4. None of the four property configurations tested changed the outcome
 
 ---
 
@@ -263,20 +263,16 @@ The bug is **not configuration-related** but rather a **code defect** in the Doc
 
 **Why Kafka Instead of ActiveMQ:**
 
-| Criteria | ActiveMQ (Broken) | Apache Kafka (Solution) |
+| Criteria | ActiveMQ (external broker) | Apache Kafka |
 |----------|-------------------|-------------------------|
-| Bug-free in OpenNMS 33.0.2 | ❌ No | ✅ Yes |
+| Worked in this lab with Horizon 33.0.2 | No | Yes |
 | Enterprise scalability | Medium | Very High |
 | Fault tolerance | Low | High (built-in replication) |
-| Industry adoption | Declining | Growing (Netflix, LinkedIn, Uber) |
-| Message throughput | ~20K msg/sec | ~1M+ msg/sec |
 | Persistence | Limited | Full (configurable retention) |
-| Coursework value | Good | Excellent |
 
 **Academic Justification:**
 - Demonstrates knowledge of modern messaging architectures
 - Aligns with current industry best practices
-- Provides talking points for scalability analysis in report
 - Shows problem-solving and architectural pivoting skills
 
 ### 6.2 Architecture Decision
@@ -300,13 +296,13 @@ OpenNMS Horizon ←→ Apache Kafka Cluster ←→ Minion (Hamhung)
 ## 7. Lessons Learned
 
 ### 7.1 Technical Lessons
-1. **Docker image bugs can't be fixed with configuration** - Sometimes the code itself is broken
+1. **Some faults cannot be fixed with configuration** - when the defect lies in the software, a design change is needed
 2. **Health checks can be misleading** - OpenNMS showed "healthy" despite ActiveMQ failure
 3. **Diagnostic methodology matters** - Systematic testing (Karaf shell, RPC tests, queue inspection) isolated the issue
 4. **Architectural flexibility is valuable** - Having alternative messaging options (Kafka) saved the project
 
 ### 7.2 Network Management Concepts Reinforced
-1. **MTTD (Mean Time To Detect):** Proper diagnostics reduced problem detection from hours to minutes
+1. **MTTD (Mean Time To Detect):** A structured diagnostic sequence shortened the time needed to isolate the fault
 2. **MTTR (Mean Time To Recover):** Clear pivot to Kafka provided fast recovery path
 3. **Distributed architecture complexity:** Messaging layer is critical single point of failure
 4. **Monitoring the monitor:** Even monitoring systems need health checks and observability
@@ -322,7 +318,7 @@ OpenNMS Horizon ←→ Apache Kafka Cluster ←→ Minion (Hamhung)
 
 **Technical Specifications:**
 - Apache ActiveMQ 5.18.3 Documentation
-- Apache Kafka 7.5.0 Documentation
+- Confluent Platform 7.5.0 Documentation (Apache Kafka)
 - Spring Framework Bean Lifecycle
 
 **Lab Repository:**
